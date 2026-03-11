@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Bottleneck & Agent Mapper</title>
-
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif;
@@ -25,6 +24,7 @@
         margin: auto;
         padding: 30px;
       }
+
       .card {
         background: white;
         border-radius: 12px;
@@ -32,11 +32,13 @@
         margin-bottom: 30px;
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
       }
+
       .grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 30px;
       }
+
       input,
       textarea,
       select {
@@ -51,6 +53,7 @@
       textarea {
         min-height: 80px;
       }
+
       button {
         background: #2563eb;
         color: white;
@@ -65,16 +68,19 @@
       button:hover {
         background: #1d4ed8;
       }
+
       .secondary {
         background: #374151;
       }
       .secondary:hover {
         background: #1f2937;
       }
+
       .list-item {
         border-bottom: 1px solid #eee;
         padding: 16px 0;
       }
+
       .tag {
         display: inline-block;
         background: #e0e7ff;
@@ -84,12 +90,14 @@
         font-size: 12px;
         margin-left: 8px;
       }
+
       .stats {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 22px;
         margin-bottom: 30px;
       }
+
       .stat {
         background: white;
         padding: 18px;
@@ -100,26 +108,31 @@
       .stat h2 {
         margin: 8px 0;
       }
+
       .search {
         margin-bottom: 16px;
       }
+
       .map {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 24px;
         margin-top: 16px;
       }
+
       .map-col {
         background: #f9fafb;
         border-radius: 10px;
         padding: 16px;
         min-height: 120px;
       }
+
       .map-col h3 {
         margin-top: 0;
         font-size: 16px;
         margin-bottom: 10px;
       }
+
       .node {
         background: white;
         border: 1px solid #e5e7eb;
@@ -128,10 +141,12 @@
         margin-bottom: 10px;
         font-size: 13px;
       }
+
       .node strong {
         display: block;
         margin-bottom: 2px;
       }
+
       .priority-map {
         background: white;
         padding: 20px;
@@ -139,11 +154,13 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
         margin-top: 24px;
       }
+
       .priority-map h3 {
         margin-top: 0;
         text-align: center;
         margin-bottom: 14px;
       }
+
       .matrix {
         display: grid;
         grid-template-columns: 2fr 2fr;
@@ -151,12 +168,14 @@
         text-align: center;
         gap: 14px;
       }
+
       .cell {
         padding: 24px;
         border: 1px solid #d1d5db;
         border-radius: 8px;
         font-size: 14px;
       }
+
       .tooltip {
         font-size: 12px;
         color: #555;
@@ -165,20 +184,35 @@
       }
     </style>
   </head>
-
   <body>
     <header>
       <h1>AI Bottleneck & Agent Mapper</h1>
-      <p>Capture internal inefficiencies and identify AI automation opportunities</p>
+      <p>
+        Capture internal inefficiencies and identify AI automation opportunities
+      </p>
     </header>
-
     <div class="container">
       <div class="stats">
-        <div class="stat"><div>Total Bottlenecks</div><h2 id="total">0</h2></div>
-        <div class="stat"><div>Client Requests</div><h2 id="s1">0</h2></div>
-        <div class="stat"><div>Manual Tool Work</div><h2 id="s2">0</h2></div>
-        <div class="stat"><div>Internal Knowledge</div><h2 id="s3">0</h2></div>
-        <div class="stat"><div>Other</div><h2 id="s4">0</h2></div>
+        <div class="stat">
+          <div>Total Bottlenecks</div>
+          <h2 id="total">0</h2>
+        </div>
+        <div class="stat">
+          <div>Client Requests</div>
+          <h2 id="s1">0</h2>
+        </div>
+        <div class="stat">
+          <div>Manual Tool Work</div>
+          <h2 id="s2">0</h2>
+        </div>
+        <div class="stat">
+          <div>Internal Knowledge</div>
+          <h2 id="s3">0</h2>
+        </div>
+        <div class="stat">
+          <div>Other</div>
+          <h2 id="s4">0</h2>
+        </div>
       </div>
 
       <div class="card">
@@ -186,29 +220,42 @@
         <div class="grid">
           <div>
             <label>Process</label>
-            <input id="process" />
+            <input id="process" placeholder="Technical Documentation Review" />
 
             <label>Problem</label>
-            <textarea id="problem"></textarea>
+            <textarea
+              id="problem"
+              placeholder="Describe the bottleneck"
+            ></textarea>
 
             <label>Impact</label>
-            <textarea id="impact"></textarea>
+            <textarea
+              id="impact"
+              placeholder="Time loss, delays, manual work..."
+            ></textarea>
 
             <label>Effort (1-10)</label>
             <input id="effort" type="number" min="1" max="10" value="5" />
-            <div class="tooltip">1 = low effort</div>
+            <div class="tooltip">
+              1 = very low effort, 10 = very high effort
+            </div>
 
             <label>Impact Score (1-10)</label>
             <input id="impactScore" type="number" min="1" max="10" value="5" />
-            <div class="tooltip">1 = low impact</div>
+            <div class="tooltip">
+              1 = very low impact, 10 = very high impact
+            </div>
           </div>
 
           <div>
             <label>AI Agent Idea</label>
-            <input id="agent" />
+            <input id="agent" placeholder="Dossier Completeness Checker" />
 
             <label>Expected Benefit</label>
-            <textarea id="benefit"></textarea>
+            <textarea
+              id="benefit"
+              placeholder="Automation, time reduction, quality improvement"
+            ></textarea>
 
             <label>Category</label>
             <select id="categorySelect">
@@ -218,9 +265,17 @@
               <option>Other</option>
             </select>
 
+            <label>Your Role</label>
+            <select id="roleSelect">
+              <option>Product Assessor</option>
+              <option>Auditor</option>
+              <option>Lead Auditor</option>
+              <option>Project Manager</option>
+            </select>
+
             <button onclick="addItem()">Add Entry</button>
             <button class="secondary" onclick="exportCSV()">Export CSV</button>
-            <button class="secondary" onclick="exportXLSX()">Export Excel (XLSX)</button>
+            <button class="secondary" onclick="clearForm()">Clear Form</button>
           </div>
         </div>
       </div>
@@ -232,35 +287,43 @@
 
       <div class="card">
         <h2>AI Priority Matrix</h2>
-        <p>Impact vs Effort</p>
-        <div class="matrix">
-          <div class="cell" id="low-effort-low-impact">Low Effort / Low Impact</div>
-          <div class="cell" id="high-effort-low-impact">High Effort / Low Impact</div>
-          <div class="cell" id="low-effort-high-impact">Low Effort / High Impact</div>
-          <div class="cell" id="high-effort-high-impact">High Effort / High Impact</div>
+        <p>Prioritize AI opportunities by impact vs effort.</p>
+        <div class="priority-map">
+          <h3>Impact vs Effort</h3>
+          <div class="matrix">
+            <div class="cell" id="low-effort-low-impact">
+              Low Effort / Low Impact
+            </div>
+            <div class="cell" id="high-effort-low-impact">
+              High Effort / Low Impact
+            </div>
+            <div class="cell" id="low-effort-high-impact">
+              Low Effort / High Impact
+            </div>
+            <div class="cell" id="high-effort-high-impact">
+              High Effort / High Impact
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="card">
         <h2>Bottleneck Database</h2>
-        <input id="search" class="search" oninput="render()" />
+        <input
+          class="search"
+          id="search"
+          placeholder="Search bottlenecks..."
+          oninput="render()"
+        />
         <div id="list"></div>
       </div>
     </div>
 
-    <!-- Firebase SDK -->
-<script src= "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src= "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src= "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
-    <!-- Excel library -->
-<script src= "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <!-- Firebase App -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <script>
-
-      /* ---------------------------
-         FIREBASE INIT
-      ---------------------------- */
       const firebaseConfig = {
         apiKey: "AIzaSyCd0rRTxyrRrZacqayNYFvAQbkGl-AwDQo",
         authDomain: "ai-bottleneck-mapper-b9a9c.firebaseapp.com",
@@ -273,175 +336,218 @@
 
       firebase.initializeApp(firebaseConfig);
       const db = firebase.firestore();
-      const auth = firebase.auth();
-      auth.signInAnonymously();
+    </script>
 
+    <script>
+      function fetchItems() {
+        db.collection("bottlenecks")
+          .orderBy("createdAt")
+          .get()
+          .then((querySnapshot) => {
+            items = [];
+            querySnapshot.forEach((doc) => {
+              items.push(doc.data());
+            });
+            render();
+          })
+          .catch((error) => console.error("Error fetching items: ", error));
+      }
 
-      /* ---------------------------
-         GLOBAL VARIABLES
-      ---------------------------- */
-      let categories = ["Client Requests","Manual Tool Work","Internal Knowledge","Other"];
-      let items = []; // populated by Firestore
+      // chiama all'avvio
+      fetchItems();
 
+      function clearForm() {
+        document.getElementById("process").value = "";
+        document.getElementById("problem").value = "";
+        document.getElementById("impact").value = "";
+        document.getElementById("agent").value = "";
+        document.getElementById("benefit").value = "";
+        document.getElementById("effort").value = 5;
+        document.getElementById("impactScore").value = 5;
+        document.getElementById("categorySelect").selectedIndex = 0;
+        document.getElementById("roleSelect").selectedIndex = 0;
+      }
 
-      /* ---------------------------
-         RENDER / MAP HELPERS
-      ---------------------------- */
+      let categories = [
+        "Client Requests",
+        "Manual Tool Work",
+        "Internal Knowledge",
+        "Other",
+      ];
+
+      let items = [
+        {
+          process: "Technical Documentation Review",
+          problem: "Manual cross-check of .docx assessments",
+          impact: "Time-consuming and error-prone",
+          agent: "Doc Review AI",
+          benefit: "Automates completeness checks",
+          category: "Manual Tool Work",
+          role: "Product Assessor",
+          effort: 7,
+          impactScore: 9,
+        },
+        {
+          process: "Client Status Inquiry",
+          problem: "Multiple employees answering same client questions",
+          impact: "Delays response time",
+          agent: "Status Inquiry Bot",
+          benefit: "Fast, consistent replies",
+          category: "Client Requests",
+          role: "Project Manager",
+          effort: 3,
+          impactScore: 8,
+        },
+      ];
+
+      const categorySelect = document.getElementById("categorySelect");
 
       function addMapColumns() {
         const container = document.getElementById("mapContainer");
         container.innerHTML = "";
-        categories.forEach(c => {
-          container.innerHTML += `<div class="map-col" id="map-${c.replace(/\s/g,'')}"><h3>${c}</h3></div>`;
+        categories.forEach((c) => {
+          const div = document.createElement("div");
+          div.className = "map-col";
+          div.id = "map-" + c.replace(/\s/g, "");
+          div.innerHTML = `<h3>${c}</h3>`;
+          container.appendChild(div);
         });
       }
 
-      function resetMatrix() {
-        document.getElementById("low-effort-low-impact").innerHTML = "Low Effort / Low Impact";
-        document.getElementById("high-effort-low-impact").innerHTML = "High Effort / Low Impact";
-        document.getElementById("low-effort-high-impact").innerHTML = "Low Effort / High Impact";
-        document.getElementById("high-effort-high-impact").innerHTML = "High Effort / High Impact";
-      }
-
-
-      /* ---------------------------
-         ADD ITEM (FIRESTORE)
-      ---------------------------- */
-      async function addItem() {
-        const process = process.value.trim();
-        const problem = problem.value.trim();
-        const impact = impact.value.trim();
-        const agent = agent.value.trim();
-        const benefit = benefit.value.trim();
+      function addItem() {
+        const process = document.getElementById("process").value;
+        const problem = document.getElementById("problem").value;
+        const impact = document.getElementById("impact").value;
+        const agent = document.getElementById("agent").value;
+        const benefit = document.getElementById("benefit").value;
         const category = categorySelect.value;
+        const role = document.getElementById("roleSelect").value;
         const effort = parseInt(document.getElementById("effort").value);
-        const impactScore = parseInt(document.getElementById("impactScore").value);
+        const impactScore = parseInt(
+          document.getElementById("impactScore").value,
+        );
 
         if (!process || !problem) {
           alert("Fill process and problem");
           return;
         }
 
-        await db.collection("bottlenecks").add({
-          process, problem, impact, agent, benefit, category, effort, impactScore,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        });
+        const newItem = {
+          process,
+          problem,
+          impact,
+          agent,
+          benefit,
+          category,
+          role,
+          effort,
+          impactScore,
+          createdAt: new Date(),
+        };
 
-        process.value = "";
-        problem.value = "";
-        impact.value = "";
-        agent.value = "";
-        benefit.value = "";
-        effort.value = 5;
-        impactScore.value = 5;
+        db.collection("bottlenecks")
+          .add(newItem)
+          .then(() => {
+            alert("Entry saved successfully!");
+            clearForm();
+            fetchItems(); // aggiorna lista e mappa
+          })
+          .catch((error) => console.error("Error saving item: ", error));
       }
 
-
-      /* ---------------------------
-         REMOVE ITEM (FIRESTORE)
-      ---------------------------- */
-      async function removeItem(id) {
-        await db.collection("bottlenecks").doc(id).delete();
-      }
-
-
-      /* ---------------------------
-         REALTIME LISTENER
-      ---------------------------- */
-      auth.onAuthStateChanged(() => {
-        db.collection("bottlenecks").orderBy("createdAt","asc")
-          .onSnapshot(snap => {
-            items = [];
-            snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-            render();
-          });
-      });
-
-
-      /* ---------------------------
-         RENDER ALL
-      ---------------------------- */
       function render() {
         const list = document.getElementById("list");
-        const search = (document.getElementById("search").value || "").toLowerCase();
+        const search = document.getElementById("search").value.toLowerCase();
         list.innerHTML = "";
         addMapColumns();
-        resetMatrix();
 
-        let count = { "Client Requests":0, "Manual Tool Work":0, "Internal Knowledge":0, "Other":0 };
+        let count = {};
+        categories.forEach((c) => (count[c] = 0));
 
-        items.filter(i => JSON.stringify(i).toLowerCase().includes(search))
-             .forEach(i => {
+        items
+          .filter((i) => JSON.stringify(i).toLowerCase().includes(search))
+          .forEach((i, index) => {
+            const div = document.createElement("div");
+            div.className = "list-item";
+            div.innerHTML = `
+<strong>${i.process}</strong>
+<span class="tag">${i.category}</span>
+<p><b>Role:</b> ${i.role}</p>
+<p><b>Problem:</b> ${i.problem}</p>
+<p><b>Impact:</b> ${i.impact}</p>
+<p><b>AI Agent:</b> ${i.agent}</p>
+<p><b>Benefit:</b> ${i.benefit}</p>
+<button onclick="removeItem(${index})">Delete</button>
+`;
+            list.appendChild(div);
 
-          list.innerHTML += `
-            <div class="list-item">
-              <strong>${i.process}</strong>
-              <span class="tag">${i.category}</span>
-              <p><b>Problem:</b> ${i.problem}</p>
-              <p><b>Impact:</b> ${i.impact}</p>
-              <p><b>AI Agent:</b> ${i.agent}</p>
-              <p><b>Benefit:</b> ${i.benefit}</p>
-              <button onclick="removeItem('${i.id}')">Delete</button>
-            </div>
-          `;
+            const node = document.createElement("div");
+            node.className = "node";
+            node.innerHTML = `<strong>${i.agent || "AI Opportunity"}</strong>${i.process} (${i.role})`;
+            document
+              .getElementById("map-" + i.category.replace(/\s/g, ""))
+              .appendChild(node);
 
-          const node = `<div class="node"><strong>${i.agent}</strong>${i.process}</div>`;
-          document.getElementById("map-"+i.category.replace(/\s/g,"")).innerHTML += node;
+            count[i.category]++;
 
-          count[i.category]++;
+            const e = i.effort;
+            const imp = i.impactScore;
 
-          const e = i.effort;
-          const imp = i.impactScore;
+            if (e <= 5 && imp <= 5)
+              document.getElementById("low-effort-low-impact").innerHTML +=
+                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+            if (e > 5 && imp <= 5)
+              document.getElementById("high-effort-low-impact").innerHTML +=
+                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+            if (e <= 5 && imp > 5)
+              document.getElementById("low-effort-high-impact").innerHTML +=
+                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+            if (e > 5 && imp > 5)
+              document.getElementById("high-effort-high-impact").innerHTML +=
+                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+          });
 
-          if (e<=5 && imp<=5) document.getElementById("low-effort-low-impact").innerHTML += node;
-          if (e>5 && imp<=5) document.getElementById("high-effort-low-impact").innerHTML += node;
-          if (e<=5 && imp>5) document.getElementById("low-effort-high-impact").innerHTML += node;
-          if (e>5 && imp>5) document.getElementById("high-effort-high-impact").innerHTML += node;
-        });
-
-        total.innerText = items.length;
-        s1.innerText = count["Client Requests"];
-        s2.innerText = count["Manual Tool Work"];
-        s3.innerText = count["Internal Knowledge"];
-        s4.innerText = count["Other"];
+        document.getElementById("total").innerText = items.length;
+        document.getElementById("s1").innerText = count["Client Requests"] || 0;
+        document.getElementById("s2").innerText =
+          count["Manual Tool Work"] || 0;
+        document.getElementById("s3").innerText =
+          count["Internal Knowledge"] || 0;
+        document.getElementById("s4").innerText = count["Other"] || 0;
       }
 
+      function removeItem(i) {
+        items.splice(i, 1);
+        render();
+      }
 
-      /* ---------------------------
-         EXPORT FUNCTIONS
-      ---------------------------- */
       function exportCSV() {
-        let csv = "Process,Problem,Impact,Agent,Benefit,Category,Effort,ImpactScore\n";
-        items.forEach(i => {
-          csv += `"${i.process}","${i.problem}","${i.impact}","${i.agent}","${i.benefit}","${i.category}",${i.effort},${i.impactScore}\n`;
+        let csv = "Process,Problem,Impact,Agent,Benefit,Category,Role\n";
+        items.forEach((i) => {
+          csv += `"${i.process}","${i.problem}","${i.impact}","${i.agent}","${i.benefit}","${i.category}","${i.role}"\n`;
         });
-        const blob = new Blob([csv], {type:"text/csv"});
+
+        const blob = new Blob([csv], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
+        a.href = url;
         a.download = "ai_bottlenecks.csv";
         a.click();
       }
 
-      function exportXLSX() {
-        const header = ["Process","Problem","Impact","Agent","Benefit","Category","Effort","ImpactScore"];
-        const rows = items.map(i => [i.process,i.problem,i.impact,i.agent,i.benefit,i.category,i.effort,i.impactScore]);
-        const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
-        XLSX.utils.book_append_sheet(wb, ws, "Bottlenecks");
-        XLSX.writeFile(wb, "ai_bottlenecks.xlsx");
+      function clearForm() {
+        document.getElementById("process").value = "";
+        document.getElementById("problem").value = "";
+        document.getElementById("impact").value = "";
+        document.getElementById("agent").value = "";
+        document.getElementById("benefit").value = "";
+        document.getElementById("effort").value = 5; // ripristina valore di default
+        document.getElementById("impactScore").value = 5; // ripristina valore di default
+        document.getElementById("categorySelect").selectedIndex = 0; // primo elemento
+        document.getElementById("roleSelect").selectedIndex = 0; // primo elemento
       }
 
-
-      /* ---------------------------
-         GLOBAL EXPOSURE
-      ---------------------------- */
-      window.addItem = addItem;
-      window.removeItem = removeItem;
-      window.exportCSV = exportCSV;
-      window.exportXLSX = exportXLSX;
-      window.render = render;
-
+      render();
     </script>
-
   </body>
 </html>
