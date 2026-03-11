@@ -310,6 +310,18 @@
         "Other",
       ];
 
+
+      function saveChanges() {
+  // Se vuoi salvare tutti i dati su Firebase, puoi fare un loop:
+  items.forEach(item => {
+    if (!item.id) return; // salta items senza id
+    db.collection("bottlenecks").doc(item.id).set(item, { merge: true })
+      .catch(console.error);
+  });
+  
+  // Aggiorna lista, mappa e matrix
+  render();
+}
       function fetchItems() {
         db.collection("bottlenecks")
           .orderBy("createdAt")
@@ -365,7 +377,8 @@
       }
 
 
-      function addItem() {
+
+function addItem() {
   const newItem = {
     process: document.getElementById("process").value,
     problem: document.getElementById("problem").value,
@@ -379,98 +392,121 @@
     createdAt: new Date()
   };
 
-  if (!newItem.process || !newItem.problem) { alert("Fill process and problem"); return; }
+  if (!newItem.process || !newItem.problem) { 
+    alert("Fill process and problem"); 
+    return; 
+  }
 
   db.collection("bottlenecks").add(newItem)
     .then((docRef) => { 
       newItem.id = docRef.id; // Recupera l'ID appena creato
       items.push(newItem); 
       render(); 
-      clearForm(); 
+      // **rimosso clearForm()** così la form resta compilata
     })
     .catch(console.error);
 }
 
       function addMapColumns() {
-        const container = document.getElementById("mapContainer");
-        container.innerHTML = "";
-        categories.forEach((c) => {
-          const div = document.createElement("div");
-          div.className = "map-col";
-          div.id = "map-" + c.replace(/\s/g, "");
-          div.innerHTML = `<h3>${c}</h3>`;
-          container.appendChild(div);
-        });
-      }
+  const container = document.getElementById("mapContainer");
+  container.innerHTML = ""; // pulisce tutto prima di ricreare
+  categories.forEach((c) => {
+    const div = document.createElement("div");
+    div.className = "map-col";
+    div.id = "map-" + c.replace(/\s/g, "");
+    div.innerHTML = `<h3>${c}</h3>`;
+    container.appendChild(div);
+  });
+}
 
+  
       function render() {
-        const list = document.getElementById("list");
-        const search = document.getElementById("search").value.toLowerCase();
-        list.innerHTML = "";
-        addMapColumns();
-        let count = {};
-        categories.forEach((c) => (count[c] = 0));
+  const list = document.getElementById("list");
+  const search = document.getElementById("search").value.toLowerCase();
+  list.innerHTML = "";
+  addMapColumns();
 
-        items
-          .filter((i) => JSON.stringify(i).toLowerCase().includes(search))
-          .forEach((i, index) => {
-            const div = document.createElement("div");
-            div.className = "list-item";
-            div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</span>
+  let count = {};
+  categories.forEach((c) => (count[c] = 0));
+
+  // **Svuota le celle della Priority Matrix prima di aggiungere nuovi nodi**
+  const matrixCells = [
+    "low-effort-low-impact",
+    "high-effort-low-impact",
+    "low-effort-high-impact",
+    "high-effort-high-impact"
+  ];
+  matrixCells.forEach(id => {
+    const cell = document.getElementById(id);
+    switch(id) {
+      case "low-effort-low-impact": cell.innerHTML = "Low Effort / Low Impact"; break;
+      case "high-effort-low-impact": cell.innerHTML = "High Effort / Low Impact"; break;
+      case "low-effort-high-impact": cell.innerHTML = "Low Effort / High Impact"; break;
+      case "high-effort-high-impact": cell.innerHTML = "High Effort / High Impact"; break;
+    }
+  });
+
+  // Filtra e mostra gli item
+  items
+    .filter((i) => JSON.stringify(i).toLowerCase().includes(search))
+    .forEach((i, index) => {
+      // Lista Bottleneck
+      const div = document.createElement("div");
+      div.className = "list-item";
+      div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</span>
 <p><b>Role:</b> ${i.role}</p>
 <p><b>Problem:</b> ${i.problem}</p>
 <p><b>Impact:</b> ${i.impact}</p>
 <p><b>AI Agent:</b> ${i.agent}</p>
 <p><b>Benefit:</b> ${i.benefit}</p>
 <button onclick="removeItem(${index})">Delete</button>`;
-            list.appendChild(div);
+      list.appendChild(div);
 
-            const node = document.createElement("div");
-            node.className = "node";
-            node.innerHTML = `<strong>${i.agent || "AI Opportunity"}</strong>${i.process} (${i.role})`;
-            document
-              .getElementById("map-" + i.category.replace(/\s/g, ""))
-              .appendChild(node);
+      // AI Opportunity Map
+      const node = document.createElement("div");
+      node.className = "node";
+      node.innerHTML = `<strong>${i.agent || "AI Opportunity"}</strong>${i.process} (${i.role})`;
+      document
+        .getElementById("map-" + i.category.replace(/\s/g, ""))
+        .appendChild(node);
 
-            count[i.category]++;
-            const e = i.effort,
-              imp = i.impactScore;
-            if (e <= 5 && imp <= 5)
-              document.getElementById("low-effort-low-impact").innerHTML +=
-                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
-            if (e > 5 && imp <= 5)
-              document.getElementById("high-effort-low-impact").innerHTML +=
-                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
-            if (e <= 5 && imp > 5)
-              document.getElementById("low-effort-high-impact").innerHTML +=
-                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
-            if (e > 5 && imp > 5)
-              document.getElementById("high-effort-high-impact").innerHTML +=
-                `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
-          });
+      // Aggiorna contatori categoria
+      count[i.category]++;
 
-        document.getElementById("total").innerText = items.length;
-        document.getElementById("s1").innerText = count["Client Requests"] || 0;
-        document.getElementById("s2").innerText =
-          count["Manual Tool Work"] || 0;
-        document.getElementById("s3").innerText =
-          count["Internal Knowledge"] || 0;
-        document.getElementById("s4").innerText = count["Other"] || 0;
-      }
+      // **Priority Matrix**
+      const e = i.effort, imp = i.impactScore;
+      if (e <= 5 && imp <= 5)
+        document.getElementById("low-effort-low-impact").innerHTML +=
+          `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+      else if (e > 5 && imp <= 5)
+        document.getElementById("high-effort-low-impact").innerHTML +=
+          `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+      else if (e <= 5 && imp > 5)
+        document.getElementById("low-effort-high-impact").innerHTML +=
+          `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+      else if (e > 5 && imp > 5)
+        document.getElementById("high-effort-high-impact").innerHTML +=
+          `<div class='node'><strong>${i.agent}</strong>${i.process} (${i.role})</div>`;
+    });
 
-      function removeItem(i) {
-        items.splice(i, 1);
-        render();
-      }
-      function removeItem(index) {
+  // Aggiorna contatori
+  document.getElementById("total").innerText = items.length;
+  document.getElementById("s1").innerText = count["Client Requests"] || 0;
+  document.getElementById("s2").innerText = count["Manual Tool Work"] || 0;
+  document.getElementById("s3").innerText = count["Internal Knowledge"] || 0;
+  document.getElementById("s4").innerText = count["Other"] || 0;
+}
+
+ 
+function removeItem(index) {
   const itemToDelete = items[index];
 
   if (confirm("Sei sicuro di voler eliminare questa entry dal database?")) {
     db.collection("bottlenecks").doc(itemToDelete.id).delete()
       .then(() => {
         console.log("Eliminato da Firebase");
-        items.splice(index, 1);
-        render();
+        items.splice(index, 1); // rimuove dall'array
+        saveChanges();          // aggiorna mappa e priority matrix
       })
       .catch(error => {
         console.error("Errore nella cancellazione:", error);
