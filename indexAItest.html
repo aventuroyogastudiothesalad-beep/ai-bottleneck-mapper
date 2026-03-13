@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bottlenecks Collector & AI Agent Mapper</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png" />
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif;
@@ -282,7 +282,9 @@
             <button onclick="saveEdit()" id="saveEditBtn" style="display: none">
               Save Edit
             </button>
-            <button class="secondary" onclick="exportCSV()">Export Excel</button>
+            <button class="secondary" onclick="exportCSV()">
+              Export Excel
+            </button>
             <button class="secondary" onclick="clearForm()">Clear Form</button>
           </div>
         </div>
@@ -412,6 +414,7 @@
           role: document.getElementById("roleSelect").value,
           effort: parseInt(document.getElementById("effort").value),
           impactScore: parseInt(document.getElementById("impactScore").value),
+          priorityScore: parseFloat((impactScore / effort).toFixed(2)),
           createdAt: new Date(),
         };
 
@@ -484,7 +487,14 @@
             // Lista Bottleneck
             const div = document.createElement("div");
             div.className = "list-item";
-            div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</span>
+            // Colore elegante in scala blu
+let color = i.priorityScore > 2.5 
+    ? "#1E40AF"    // blu intenso
+    : i.priorityScore > 1.5 
+        ? "#60A5FA"  // blu medio
+        : "#DBEAFE"; // azzurro chiaro
+
+div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</span>
 
 <p><b>Role:</b> ${i.role}</p>
 
@@ -499,6 +509,18 @@
 <p><b>Effort:</b> ${i.effort}</p>
 
 <p><b>Impact Score:</b> ${i.impactScore}</p>
+
+<p style="
+    background:${color};
+    padding:6px 8px;
+    border-radius:6px;
+    display:inline-block;
+    color:#FFFFFF;          /* testo sempre bianco */
+    font-weight:bold;       /* più spesso */
+    font-size:14px;         /* leggermente più grande */
+">
+  Priority: ${i.priorityScore}
+</p>
 
 <button onclick="editItem(${index})">Edit</button>
 <button onclick="removeItem(${index})">Delete</button>`;
@@ -587,6 +609,9 @@
         item.impactScore = parseInt(
           document.getElementById("impactScore").value,
         );
+        item.priorityScore = parseFloat(
+          (item.impactScore / item.effort).toFixed(2),
+        );
 
         db.collection("bottlenecks")
           .doc(item.id)
@@ -640,7 +665,11 @@
           Role: i.role,
           Effort: i.effort,
           ImpactScore: i.impactScore,
-          CreatedAt: i.createdAt,
+          PriorityScore: i.priorityScore, // <-- aggiunto
+          CreatedAt:
+            i.createdAt instanceof Date
+              ? i.createdAt.toLocaleString()
+              : new Date(i.createdAt.seconds * 1000).toLocaleString(), // attenzione alla data!
         }));
 
         const worksheet = XLSX.utils.json_to_sheet(data);
