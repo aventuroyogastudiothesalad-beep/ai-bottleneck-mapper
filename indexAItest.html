@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Bottleneck & Agent Mapper</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <style>
       body {
         font-family: Arial, Helvetica, sans-serif;
@@ -375,18 +376,6 @@
           .get()
           .then((snapshot) => {
             items = [];
-            snapshot.forEach((doc) => items.push(doc.data()));
-            render();
-          })
-          .catch(console.error);
-      }
-
-      function fetchItems() {
-        db.collection("bottlenecks")
-          .orderBy("createdAt")
-          .get()
-          .then((snapshot) => {
-            items = [];
             snapshot.forEach((doc) => {
               let data = doc.data();
               data.id = doc.id; // Fondamentale: salva l'ID del documento
@@ -411,34 +400,6 @@
       document
         .getElementById("roleSelect")
         .addEventListener("change", updateEffortAccess);
-
-      function addItem() {
-        const newItem = {
-          process: document.getElementById("process").value,
-          problem: document.getElementById("problem").value,
-          impact: document.getElementById("impact").value,
-          agent: document.getElementById("agent").value,
-          benefit: document.getElementById("benefit").value,
-          category: document.getElementById("categorySelect").value,
-          role: document.getElementById("roleSelect").value,
-          effort: parseInt(document.getElementById("effort").value),
-          impactScore: parseInt(document.getElementById("impactScore").value),
-          createdAt: new Date(),
-        };
-        if (!newItem.process || !newItem.problem) {
-          alert("Fill process and problem");
-          return;
-        }
-
-        db.collection("bottlenecks")
-          .add(newItem)
-          .then(() => {
-            items.push(newItem);
-            render();
-            clearForm();
-          })
-          .catch(console.error);
-      }
 
       function addItem() {
         const newItem = {
@@ -524,11 +485,21 @@
             const div = document.createElement("div");
             div.className = "list-item";
             div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</span>
+
 <p><b>Role:</b> ${i.role}</p>
+
 <p><b>Problem:</b> ${i.problem}</p>
+
 <p><b>Impact:</b> ${i.impact}</p>
+
 <p><b>AI Agent:</b> ${i.agent}</p>
+
 <p><b>Benefit:</b> ${i.benefit}</p>
+
+<p><b>Effort:</b> ${i.effort}</p>
+
+<p><b>Impact Score:</b> ${i.impactScore}</p>
+
 <button onclick="editItem(${index})">Edit</button>
 <button onclick="removeItem(${index})">Delete</button>`;
 
