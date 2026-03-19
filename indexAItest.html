@@ -190,6 +190,11 @@
         border: 1px solid #d1d5db;
         font-size: 14px;
       }
+
+      .highlight {
+        outline: 3px solid #2563eb;
+        transition: 0.3s;
+      }
     </style>
   </head>
   <body>
@@ -272,12 +277,9 @@
               <option>Other</option>
             </select>
             <label>Your Role</label>
-            <select id="roleSelect">
-              <option>Product Assessor</option>
-              <option>Auditor</option>
-              <option>Lead Auditor</option>
-              <option>Project Manager</option>
-            </select>
+
+            <select id="roleSelect"></select>
+
             <button onclick="addItem()">Add Entry</button>
             <button onclick="saveEdit()" id="saveEditBtn" style="display: none">
               Save Edit
@@ -319,6 +321,13 @@
 
       <div class="card">
         <h2>Bottleneck Database</h2>
+        <div style="display: flex; gap: 12px; margin-bottom: 10px"></div>
+        <select id="sortSelect" onchange="render()">
+          <option value="priority">Sort by Priority</option>
+          <option value="impact">Sort by Impact</option>
+          <option value="effort">Sort by Effort</option>
+          <option value="date">Sort by Date</option>
+        </select>
         <input
           class="search"
           id="search"
@@ -358,6 +367,41 @@
         "Internal Knowledge",
         "Other",
       ];
+
+      const roles = [
+        "Product Assessor",
+        "Auditor",
+        "Lead Auditor",
+        "Project Manager",
+        "Technical Coordinator",
+        "CV Reviewer",
+        "Certification Manager",
+        "Technical Manager",
+        "In-house Clinician",
+        "Clinical Expert",
+        "System Solution Engineer",
+        "Clinical Reviewer",
+        "Final Reviewer",
+        "Certification Decision Maker",
+        "Global Medical Device Technical Manager",
+        "Global Medical Device Certification Manager",
+        "Junior Final Reviewer (On-site)",
+        "Junior Final Reviewer (TDA)",
+        "Senior CV Reviewer",
+        "Other",
+      ];
+
+      function populateRoles() {
+        const select = document.getElementById("roleSelect");
+        select.innerHTML = "";
+
+        roles.forEach((role) => {
+          const option = document.createElement("option");
+          option.value = role;
+          option.textContent = role;
+          select.appendChild(option);
+        });
+      }
 
       function saveChanges() {
         // Se vuoi salvare tutti i dati su Firebase, puoi fare un loop:
@@ -429,6 +473,19 @@
             newItem.id = docRef.id; // Recupera l'ID appena creato
             items.push(newItem);
             render();
+
+            const map = document.getElementById("mapContainer");
+            map.scrollIntoView({ behavior: "smooth" });
+            highlightElement(map);
+            
+            document.getElementById("mapContainer").scrollIntoView({
+              behavior: "smooth",
+            });
+            setTimeout(() => {
+              document.querySelector(".priority-map").scrollIntoView({
+                behavior: "smooth",
+              });
+            }, 400);
             // **rimosso clearForm()** così la form resta compilata
           })
           .catch(console.error);
@@ -488,13 +545,14 @@
             const div = document.createElement("div");
             div.className = "list-item";
             // Colore elegante in scala blu
-let color = i.priorityScore > 2.5 
-    ? "#1E40AF"    // blu intenso
-    : i.priorityScore > 1.5 
-        ? "#60A5FA"  // blu medio
-        : "#DBEAFE"; // azzurro chiaro
+            let color =
+              i.priorityScore > 2.5
+                ? "#1E40AF" // blu intenso
+                : i.priorityScore > 1.5
+                  ? "#60A5FA" // blu medio
+                  : "#DBEAFE"; // azzurro chiaro
 
-div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</span>
+            div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</span>
 
 <p><b>Role:</b> ${i.role}</p>
 
@@ -716,12 +774,18 @@ div.innerHTML = `<strong>${i.process}</strong><span class="tag">${i.category}</s
         document.getElementById("effort").disabled = !reviewed;
       }
 
+      function highlightElement(el) {
+        el.classList.add("highlight");
+        setTimeout(() => el.classList.remove("highlight"), 1200);
+      }
+
       // Aggiorna subito quando la checkbox cambia
       document
         .getElementById("reviewedByDeveloper")
         .addEventListener("change", updateFieldAccess);
 
       fetchItems();
+      populateRoles();
     </script>
   </body>
 </html>
