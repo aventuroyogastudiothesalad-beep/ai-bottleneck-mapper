@@ -195,6 +195,11 @@
         outline: 3px solid #2563eb;
         transition: 0.3s;
       }
+
+      .suggest-btn {
+        display: block; /* forza bottone su nuova riga */
+        margin: 8px 0 14px 0; /* spazio verticale */
+      }
     </style>
   </head>
   <body>
@@ -280,6 +285,14 @@
           <div>
             <label>AI Agent Idea</label
             ><input id="agent" placeholder="Dossier Completeness Checker" />
+            <button
+              type="button"
+              onclick="suggestAgent()"
+              class="secondary suggest-btn"
+            >
+              Suggest AI Agent
+            </button>
+
             <label>Expected Benefit</label
             ><textarea
               id="benefit"
@@ -451,6 +464,10 @@
       function updateEffortAccess() {
         const role = document.getElementById("roleSelect").value;
         const effortInput = document.getElementById("effort");
+        const effort = parseInt(document.getElementById("effort").value);
+        const impactScore = parseInt(
+          document.getElementById("impactScore").value,
+        );
 
         if (role === "Developer") {
           effortInput.disabled = false; // Developer può modificare
@@ -462,6 +479,32 @@
       document
         .getElementById("roleSelect")
         .addEventListener("change", updateEffortAccess);
+
+      function suggestAgent() {
+        const problem = document.getElementById("problem").value.trim();
+        const question = document
+          .getElementById("frequentQuestion")
+          .value.trim();
+
+        if (!problem && !question) {
+          alert(
+            "Inserisci almeno un problema o una domanda frequente per suggerire un AI Agent.",
+          );
+          return;
+        }
+
+        // Genera suggerimento semplice basato su testo
+        const base = problem || question;
+        const suggestion =
+          "AI Assistant for " +
+          base.slice(0, 40) +
+          (base.length > 40 ? "..." : "");
+
+        document.getElementById("agent").value = suggestion;
+
+        // Highlight per attirare attenzione
+        highlightElement(document.getElementById("agent"));
+      }
 
       function addItem() {
         const newItem = {
@@ -613,7 +656,6 @@ ${i.response ? `<p><b>Response:</b> ${i.response}</p>` : ""}
 <button onclick="editItem('${i.id}')">Edit</button>
 <button onclick="removeItem('${i.id}')">Delete</button>`;
 
-
           list.appendChild(div);
 
           // AI Opportunity Map
@@ -728,6 +770,20 @@ ${i.response ? `<p><b>Response:</b> ${i.response}</p>` : ""}
             );
             addButton.textContent = "Add Entry";
             addButton.onclick = addItem;
+
+            // --- NUOVO: scroll alla entry aggiornata ---
+            setTimeout(() => {
+              const listItem = [
+                ...document.querySelectorAll("#list .list-item"),
+              ].find((div) =>
+                div
+                  .querySelector("button")
+                  .getAttribute("onclick")
+                  .includes(item.id),
+              );
+              if (listItem) highlightElement(listItem); // evidenzia
+              listItem?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 200); // piccolo delay per far finire il render
           })
           .catch(console.error);
 
